@@ -1,0 +1,110 @@
+#2 NODE JS와 EXPRESS JS
+
+-nodejs가 나옴으로 인해서 js를 브라우저가 아닌 서버사이드에서 쓸 수 있게 되었음
+-express js는 node가 자동차엔진이라 치면 자동차바퀴,브레이크 등 자동차를 만드는 것-노드js의 프레임워크
+
+노드를 홈페이지에서 다운받았으면 터미널에서 만들고 싶은 곳에 cd로 들어가서(ex)documents)
+mkdir (노드 프로젝트 이름) -> cd (노드 프로젝트 이름) -> npm init 쳐서 엔터엔터 치다가
+이름 설정해도 되고 안해도 되고 엔터 다 치고 좋아하는 에디터에서 코드치면 됨(ex) vscode)
+npm init은 package.json을 만들기 위해서임 package.json을 수동으로 만드려면 굳이 init안해도 됨
+
+익스프레스는 vscode내의 터미널에서 npm install express --save치면 만들어짐
+
+ 노드를 인스톨하면 node_modules가 생기고 이 안에 라이브러리들이 들어가게 됨
+ 익스프레스 인스톨해서 package.json에 들어가면 "express"가 표시가 됨
+
+ express홈페이지에서 어떻게 가져오는지 항상 문서를 확인하면서 기억 상기하기!
+ index.js 파일에 익스프레스 들고 오고 port번호 설정하면 됨
+ package.json 파일의 "start"도 만들어주기
+
+이제 터미널에서 npm run start를 하고 웹에서 localhost:5000을 띄워보면 잘작동됨
+
+
+#3 mongoDB 연결
+
+몽고db 사이트가서 회원가입한 후 (내 아이디 :leeswon33@naver.com bokji33!!) 클러스트를 만듬
+클라우드는 아무곳에서나 만들고 가까운 나라 서버 선택 후 cluster name 설정 후 create
+설치가 되면 sandbox 안에 connect해서 username/password 설정 후 connect your application 
+connection string을 복사해서 vscode로 돌아와서 index파일에 일단 붙여놓기
+
+mongoose는 몽고디비를 편하게 쓰게해주는 툴이고 npm install mongoose --save 해서 설치
+그럼 package.json에 mongoose 들어옴 
+index로 돌아가서 몽구스 툴을 불러와주고 아까 복사했던 걸 mongoose.connect('')안에 붙여넣기
+
+
+#4 mongoDB Model & Schema
+
+User.js 파일에 메모해둠
+
+
+#5 git 설치 / #6 SSH를 이용해 github 연결
+
+git - 버전관리 시스템 (여러명이 코드 합침, 누가 어떤 걸 만들었는지 확인, 공유)
+터미널에 git --version해서 다운되어있는지 확인
+git bash에 들어가서 프로젝트 디렉토리에 들어가서 git init을 하거나 vscode에서 git init 하면 working directory로 들어감
+git status하면 현재 상태 볼수 있음 
+git add (파일) 하면 Staging Area로 들어감 (git repository 들어가기 전 대기상태)
+node_modules는 너무 파일용량이 크기 때문에 add하지 않아도 됨 add하기 전에 .gitignore 파일을 만들면
+add .(전체) 해도 무시될 수 있음 staging area에서 파일을 빼려면 git rm --cached node_modules -r
+git commit -m "message" 하면 git repository(local)-저장소에 올라감
+깃헙(클라우드)에 올리려면 깃헙에 들어가서 repository를 생성 (local repository를 remote repository로 옮기기 위한 준비)
+그럼 깃헙의 command line 가이드를 따라서 git bash에 치면 되는데 내컴퓨터(local)와 gitgub서버(remote)를
+안전하게 통신하는 방법이 없기 때문에 에러가 날것임 
+이때 쓰는 것이 SSH(Secure Shell)을 쓰는 것임
+ssh가 설치되어 있는지 확인하려면 git bash에서 ls -a ~/.ssh를 해서 id_rsa와 id_rsa.pub이 있으면 설치된것임
+없으면 구글에 generating a new ssh 들어가서 가이드에 따라서 설치하면 됨
+그 다음 맨 밑에 add ssh key to your github account 누르고 안내에 따라 깃헙이랑 연결해주면 됨 마지막은
+git push - git repository(remote)로 옮겨줌
+
+
+#bodyparser & postman $ 회원가입 기능 만들기
+
+client(브라우저)로 무언가 입력해서 서버에 보내려면 body-parser가 필요함 npm install body-parser --save해서 설치
+
+현재 client가 없기 때문에 그것을 대체하기 위해 postman이란 걸 홈페이지 가서 다운로드
+이제 회원가입을 위한 register route를 만듬
+
+index 파일에 const bodyParser = require('body-parser')로 bodyparser를 가져오고
+const {User} = require("./models/User")로 User.js를 가져온 후
+
+app.use(BodyParser.urlencoded({extended: true})) -apprication/x-www-form-urlencoded 이라는 데이터를 app에서 쓸 수 있게 가져옴
+app.use(bodyParser.json())-apprication/json 데이터를 app에서 쓸 수 있게 가져옴
+
+그다음 app.post('/register'), (req,res) => { - 입력을 서버에 보내기 위한 post를 만들어준다 (통로 -route)
+
+    const user = new User(req.body) -req.body 안에 User.js의 스키마 내용에 기반한 입력이 들어있다 -bodyparser가 있기 때문에 client가 보낸 걸 받을 수 있는거임
+
+    user.save() -mongoDB에서 오는 메소드 - req.body의 정보들을 user 모델에 저장해줌, 안에 콜백함수는 에러났는지 확인용 index 파일 참고
+})
+
+이제 저장을 하고 이 앱을 가동하기 위해 npm run start 하면 연결
+postman에 들어가 post 설정후 주소 입력 후 body - raw - json 해서 send하면 success
+
+
+#8 nodemon 설치
+
+원래 무언가 소스를 바꿀 때 npm run start로 노드 서버를 가동시킨 것을 작업 종료하고 다시 가동했어야 코드변화가 반영되는데
+nodemon을 이용하면 굳이 다시 가동하지 않아도 소스의 변화를 감지해서 변화를 반영해줌
+
+다운 받으려면 npm install nodemon --save-dev (dev가 들어가는 이유는 developer mode-local해서 작업할때, production mode-배포를 하고 난 이후에 작업할 때, 즉 local에서 작업할때만 nodemon하겠다 란 뜻)
+그럼 package.json에 nodemon이 들어가고 nodemon으로 사용하기 위해서 package에 script를 하나 더 만들어줘야함
+원래 start를 설정해 인덱스를 실행했지만 package에 start 밑에 "backend(아무이름이나 상관 X)"를 설정해줌
+npm run backend를 하면 노드를 끄고 켜지 않고 소스코드를 바꿔도 바로바로 브라우저 새로고침을 하면 변화가 반영됨
+
+
+#9 비밀 설정 정보 관리
+
+소스 안의 비밀 정보를 보호하는 방법
+ex) mongoDB의 아이디 비밀번호 - 깃헙에 소스를 올리면 이 부분까지 올려지니까 남이 보면 안되겠죠
+그래서 그 부분을 .ignore파일에 깃헙에 올라가면 안된다고 쳐줘야됨
+
+-Local 환경에서
+config폴더를 만든 후 dev.js파일에 mongoDB 아이디 정보를 넣어주고
+
+-Production 환경에서 (배포한 후)
+heroku라는 사이트에서 관리를 해줌
+config 폴더에 prod.js를 만들어 MONGO_URI를 henroku 사이트에 똑같은 이름으로 설정
+
+key.js도 만들어 local mode일 때, production 모드일 때 환경 설정
+index파일에서 ./config/key 들고 와서 app.connect에 mongoURI 키값 넣어주면 됨
+그 후 local환경에서는 .gitignore 파일에 dev.js를 추가해줌
