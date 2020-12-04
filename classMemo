@@ -107,4 +107,5 @@ config 폴더에 prod.js를 만들어 MONGO_URI를 henroku 사이트에 똑같�
 
 key.js도 만들어 local mode일 때, production 모드일 때 환경 설정
 index파일에서 ./config/key 들고 와서 app.connect에 mongoURI 키값 넣어주면 됨
-그 후 local환경에서는 .gitignore 파일에 dev.js를 추가해줌
+그 후 local환경에서는 .gitignore 파일에 dev.js를 추가해주고
+작업종료 후 git add . 하면
